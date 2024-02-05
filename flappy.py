@@ -3,6 +3,7 @@ import neat
 import time
 import os
 import random
+import asyncio
 pygame.font.init()
 
 WIN_WIDTH = 500
@@ -10,6 +11,7 @@ WIN_HEIGHT = 800
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
 END_FONT = pygame.font.SysFont("comicsans", 70)
 DRAW_LINES = False
+GEN = 0
 
 
 BIRD_IMGS = [
@@ -161,7 +163,7 @@ class Base:
             
 
 
-def draw_window(win, birds, pipes, base, score):
+def draw_window(win, birds, pipes, base, score, gen):
     win.blit(BG_IMG, (0,0))
 
     for pipe in pipes:
@@ -170,6 +172,9 @@ def draw_window(win, birds, pipes, base, score):
     text = STAT_FONT.render("Score: " + str(score), 1, (255,255,255))
     win.blit(text, (max(0, WIN_WIDTH - 10 - text.get_width()), 10))
 
+    text = STAT_FONT.render("Gen: " + str(gen), 1, (255,255,255))
+    win.blit(text, (max(0, 10 - text.get_width()), 10))
+
     base.draw(win)
     for bird in birds:
         bird.draw(win)
@@ -177,7 +182,9 @@ def draw_window(win, birds, pipes, base, score):
 
 
 def main(genomes, config):
-
+ 
+    global GEN
+    GEN += 1
     nets = []
     ge = []
     birds = []
@@ -259,7 +266,10 @@ def main(genomes, config):
                 ge.pop(x)
 
         base.move()
-        draw_window(win, birds, pipes, base, score)
+        draw_window(win, birds, pipes, base, score, GEN)
+
+
+        # await asyncio.sleep(0)
 
     
 
